@@ -8,6 +8,7 @@
 
 #import "ViewController.h"
 #import <QuartzCore/QuartzCore.h>
+#import "UIImage+JXRoundIcon.h"
 
 @interface ViewController ()
 
@@ -197,11 +198,12 @@ static int num = 0;
         // 显示图片
         UIImage *image = [UIImage imageWithData:imageData];
         
-        self.imageView.image = image;
-        
+//        self.imageView.image = image;
+        self.imageView.image = [UIImage createRoundIconWithImage:image border:0.5 borderColor:[UIColor blackColor]];
+                                
         // 设置边框和颜色
-        self.imageView.layer.borderWidth = 2;
-        self.imageView.layer.borderColor = [[UIColor redColor] CGColor];
+//        self.imageView.layer.borderWidth = 2;
+//        self.imageView.layer.borderColor = [[UIColor redColor] CGColor];
         
         self.imageView.contentMode = UIViewContentModeScaleAspectFit;
         

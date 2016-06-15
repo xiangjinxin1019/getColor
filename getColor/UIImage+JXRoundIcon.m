@@ -10,10 +10,8 @@
 
 @implementation UIImage (JXRoundIcon)
 
-+(instancetype)imageWithIconName:(NSString *)name border:(int)border
++(instancetype)createRoundIconWithImage:(UIImage *)image border:(int)border borderColor:(UIColor *)color
 {
-    //头像图片
-    UIImage * image = [UIImage imageNamed:name];
 
     CGSize size = CGSizeMake(image.size.width + border, image.size.height + border);
     
@@ -23,7 +21,7 @@
     //绘制边框的圆
     CGContextRef context = UIGraphicsGetCurrentContext();
     CGContextAddEllipseInRect(context, CGRectMake(0, 0, size.width, size.height));
-//    [color set ];
+    [color set ];
     CGContextFillPath(context);
     
     //设置头像frame

@@ -10,6 +10,7 @@
 
 @interface UIImage (JXRoundIcon)
 
-+(instancetype) imageWithIconName:(NSString *)name border:(int)border borderColor(UIColor *)color;
+
++(instancetype) createRoundIconWithImage:(UIImage *)image border:(int)border borderColor:(UIColor *)color;
 
 @end
