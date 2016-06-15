@@ -7,6 +7,7 @@
 //
 
 #import "ViewController.h"
+#import <QuartzCore/QuartzCore.h>
 
 @interface ViewController ()
 
@@ -198,10 +199,17 @@ static int num = 0;
         
         self.imageView.image = image;
         
+        // 设置边框和颜色
+        self.imageView.layer.borderWidth = 2;
+        self.imageView.layer.borderColor = [[UIColor redColor] CGColor];
+        
         self.imageView.contentMode = UIViewContentModeScaleAspectFit;
         
         // 得到image的尺寸
         CGSize imageSize = image.size;
+        
+        NSLog(@"image width: %f",imageSize.width);
+        NSLog(@"image width: %f",imageSize.height);
         
         // 设置8个位置坐标
         CGPoint leftTopPoint = CGPointMake(imageSize.width * 0.1, imageSize.height * 0.1);      // 取左上
