@@ -182,6 +182,91 @@ static int num = 0;
   
 }
 
+#pragma mark - 显示图片
+-(void) showPictureFromPicUrlArray:(NSArray *)picUrlArray
+{
+    // 取url
+    NSString *picUrlString = picUrlArray[num];
+    
+    NSURL *picUrl = [NSURL URLWithString:picUrlString];
+    
+    NSData *imageData = [NSData dataWithContentsOfURL:picUrl];
+    
+    // 显示头像图片
+    UIImage *image = [UIImage imageWithData:imageData];
+    // 绘制圆形头像
+    self.imageView.image = [UIImage createRoundIconWithImage:image border:0.5 borderColor:[UIColor blackColor]];
+    
+    self.imageView.contentMode = UIViewContentModeScaleAspectFit;
+    
+    // 头像虚化背景图片
+    CGFloat blurRadius = 200;
+    NSUInteger interation = 10;
+    UIColor *tintColor = [UIColor grayColor];
+    UIImage *blurredImage = [image blurredImageWithRadius:blurRadius iterations:interation tintColor:tintColor];
+    
+    // 显示背景图片
+    self.backgroundImageView.image = blurredImage;
+    
+    
+    // 得到image的尺寸
+    CGSize imageSize = image.size;
+    
+    NSLog(@"image width: %f",imageSize.width);
+    NSLog(@"image width: %f",imageSize.height);
+    
+    const double interval = 0.1;
+    // 设置8个位置坐标
+    CGPoint leftTopPoint = CGPointMake(imageSize.width * interval, imageSize.height * interval);                    // 取左上
+    CGPoint topPoint = CGPointMake(imageSize.width * 0.5, imageSize.height * interval);                             // 取上
+    CGPoint rightTopPoint = CGPointMake(imageSize.width * (1 - interval), imageSize.height * interval);             // 取右上
+    CGPoint rightPoint = CGPointMake(imageSize.width * (1 - interval), imageSize.height * 0.5);                     // 取右
+    CGPoint rightDownPoint = CGPointMake(imageSize.width * (1 - interval), imageSize.height * (1 - interval));      // 取右下
+    CGPoint downPoint = CGPointMake(imageSize.width * 0.5, imageSize.height * (1 - interval));                      // 取下
+    CGPoint leftDownPoint = CGPointMake(imageSize.width * interval, imageSize.height * (1 - interval));             // 取左下
+    CGPoint leftPoint = CGPointMake(imageSize.width * interval, imageSize.height * 0.5);                            // 取左
+    
+    // 得到8个位置灰阶值
+    double leftTopPointColor = [self getColorAtLocation:leftTopPoint inImage:image];
+    double topPointColor = [self getColorAtLocation:topPoint inImage:image];
+    double rightTopPointColor = [self getColorAtLocation:rightTopPoint inImage:image];
+    double rightPointColor = [self getColorAtLocation:rightPoint inImage:image];
+    double rightDownPointColor = [self getColorAtLocation:rightDownPoint inImage:image];
+    double downPointColor = [self getColorAtLocation:downPoint inImage:image];
+    double leftDownPointColor = [self getColorAtLocation:leftDownPoint inImage:image];
+    double eftPointColor = [self getColorAtLocation:leftPoint inImage:image];
+    
+    // 平均灰阶值
+    double grayLevel = ( leftTopPointColor + topPointColor + rightTopPointColor + rightPointColor +
+                        rightDownPointColor + downPointColor + leftDownPointColor + eftPointColor ) / 8.0;
+    
+    // 显示灰阶值
+    if (num >= 0) {
+        
+        self.textLabel.hidden = NO;
+        self.FontLabel.hidden = NO;
+        
+        self.grayLevelLabel.text = [NSString stringWithFormat:@"%f",grayLevel];
+        
+        self.grayLevelLabel.numberOfLines = 0;
+        
+        NSLog(@"%f",grayLevel);
+    }
+    
+    num++;
+    
+    // 根据灰阶值调整字体颜色
+    if (grayLevel <= 100) {
+        
+        self.FontLabel.textColor = [UIColor whiteColor];
+        
+    } else if (grayLevel > 100) {
+        
+        self.FontLabel.textColor = [UIColor blackColor];
+    }
+    
+    NSLog(@"%@", picUrlString);
+}
 
 #pragma mark - 每次touch，从plist中选择一张图片计算灰阶值
 -(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
@@ -194,81 +279,8 @@ static int num = 0;
 
     if (num < totalNum) {
         
-        // 取url
-        NSString *picUrlString = picUrlArray[num];
-        
-        NSURL *picUrl = [NSURL URLWithString:picUrlString];
-        
-        NSData *imageData = [NSData dataWithContentsOfURL:picUrl];
-        
-        // 显示头像图片
-        UIImage *image = [UIImage imageWithData:imageData];
-        
-        self.imageView.image = [UIImage createRoundIconWithImage:image border:0.5 borderColor:[UIColor blackColor]];
-        
-        self.imageView.contentMode = UIViewContentModeScaleAspectFit;
-        
-        // 显示背景图片
-        CGFloat blurRadius = 200;
-        NSUInteger interation = 10;
-        UIColor *tintColor = [UIColor grayColor];
-        UIImage *blurredImage = [image blurredImageWithRadius:blurRadius iterations:interation tintColor:tintColor];
-        self.backgroundImageView.image = blurredImage;
-//        self.backgroundImageView.image = [[UIImage alloc] blurredImageWithRadius:blurRadius iterations:interation tintColor:tintColor];
-//        self.backgroundImageView.backgroundColor = [UIColor grayColor];
-        
-        // 得到image的尺寸
-        CGSize imageSize = image.size;
-        
-        NSLog(@"image width: %f",imageSize.width);
-        NSLog(@"image width: %f",imageSize.height);
-        
-        const double interval = 0.1;
-        // 设置8个位置坐标
-        CGPoint leftTopPoint = CGPointMake(imageSize.width * interval, imageSize.height * interval);                    // 取左上
-        CGPoint topPoint = CGPointMake(imageSize.width * 0.5, imageSize.height * interval);                             // 取上
-        CGPoint rightTopPoint = CGPointMake(imageSize.width * (1 - interval), imageSize.height * interval);             // 取右上
-        CGPoint rightPoint = CGPointMake(imageSize.width * (1 - interval), imageSize.height * 0.5);                     // 取右
-        CGPoint rightDownPoint = CGPointMake(imageSize.width * (1 - interval), imageSize.height * (1 - interval));      // 取右下
-        CGPoint downPoint = CGPointMake(imageSize.width * 0.5, imageSize.height * (1 - interval));                      // 取下
-        CGPoint leftDownPoint = CGPointMake(imageSize.width * interval, imageSize.height * (1 - interval));             // 取左下
-        CGPoint leftPoint = CGPointMake(imageSize.width * interval, imageSize.height * 0.5);                            // 取左
-  
-        // 得到8个位置灰阶值
-        double leftTopPointColor = [self getColorAtLocation:leftTopPoint inImage:image];
-        double topPointColor = [self getColorAtLocation:topPoint inImage:image];
-        double rightTopPointColor = [self getColorAtLocation:rightTopPoint inImage:image];
-        double rightPointColor = [self getColorAtLocation:rightPoint inImage:image];
-        double rightDownPointColor = [self getColorAtLocation:rightDownPoint inImage:image];
-        double downPointColor = [self getColorAtLocation:downPoint inImage:image];
-        double leftDownPointColor = [self getColorAtLocation:leftDownPoint inImage:image];
-        double eftPointColor = [self getColorAtLocation:leftPoint inImage:image];
-        
-        // 平均灰阶值
-        double grayLevel = ( leftTopPointColor + topPointColor + rightTopPointColor + rightPointColor +
-                            rightDownPointColor + downPointColor + leftDownPointColor + eftPointColor ) / 8.0;
-        
-        // 显示灰阶值
-        if (num >= 0) {
-            
-            self.textLabel.hidden = NO;
-            self.FontLabel.hidden = NO;
-            
-            self.grayLevelLabel.text = [NSString stringWithFormat:@"%f",grayLevel];
-            
-            self.grayLevelLabel.numberOfLines = 0;
-            
-            NSLog(@"%f",grayLevel);
-        }
-        
-        num++;
-        
-        NSLog(@"%@", picUrlString);
+        [self showPictureFromPicUrlArray:picUrlArray];
     }
-    
-    
-    
-    
 }
 
 //- (void)didReceiveMemoryWarning {
