@@ -12,7 +12,7 @@
 
 -(double) getColorAtLocation:(CGPoint )point inImage:(UIImage *)image;
 
--(CGContextRef) createRBGBitmapContextFormImage:(CGImageRef )image;
+-(CGContextRef) createRGBBitmapContextFormImage:(CGImageRef )image;
 
 
 @end

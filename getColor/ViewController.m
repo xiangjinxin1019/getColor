@@ -23,18 +23,18 @@
 
 static int num = 0;
 
-#pragma mark - 获取图片某点的像素颜色
+#pragma mark - 获取图片某点的像素RGB颜色,转灰阶值
 -(double)getColorAtLocation:(CGPoint)point inImage:(UIImage *)image
 {
     
     // 定义灰阶
     double grayLevel = 0;
     
-    UIColor* color = nil;
+//    UIColor* color = nil;
     
     CGImageRef inImage = image.CGImage;
     
-    CGContextRef contextRef = [self createRBGBitmapContextFormImage:inImage];
+    CGContextRef contextRef = [self createRGBBitmapContextFormImage:inImage];
     
     if (contextRef == NULL) {
         
@@ -50,19 +50,19 @@ static int num = 0;
     
     CGContextDrawImage(contextRef, rect, inImage);
     
-    unsigned char* data = CGBitmapContextGetData (contextRef);
+    unsigned char *data = CGBitmapContextGetData (contextRef);
     
     if (data != NULL) {
         
         int offset = 4 * ( w * round(point.y) + round(point.x) );
         
-        int alpha =  data[offset];
+//        int alpha =  data[offset];
         
-        int red = data[offset+1];
+        int red = data[offset + 1];
         
-        int green = data[offset+2];
+        int green = data[offset + 2];
         
-        int blue = data[offset+3];
+        int blue = data[offset + 3];
         
 //        NSLog(@"offset: %i colors: RGB : %i %i %i %i",offset,red,green,blue,alpha);
         
@@ -74,10 +74,10 @@ static int num = 0;
         //选点的偏移量
 //        NSLog(@"x:%f y:%f", point.x, point.y);
         
-        color = [UIColor colorWithRed:(red/255.0f)
-                                green:(green/255.0f)
-                                 blue:(blue/255.0f)
-                                alpha:(alpha/255.0f)];
+//        color = [UIColor colorWithRed:(red/255.0f)
+//                                green:(green/255.0f)
+//                                 blue:(blue/255.0f)
+//                                alpha:(alpha/255.0f)];
     }
     
     CGContextRelease(contextRef);
@@ -90,7 +90,7 @@ static int num = 0;
 
 
 #pragma mark - 创建RGB信息
--(CGContextRef)createRBGBitmapContextFormImage:(CGImageRef)image
+-(CGContextRef)createRGBBitmapContextFormImage:(CGImageRef)image
 {
     CGContextRef context = NULL;
     
