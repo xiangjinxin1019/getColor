@@ -8,7 +8,9 @@
 
 #import "ViewController.h"
 #import <QuartzCore/QuartzCore.h>
+
 #import "UIImage+JXRoundIcon.h"
+#import "UIImage+JXBlurPic.h"
 
 @interface ViewController ()
 
@@ -17,6 +19,10 @@
 @property (weak, nonatomic) IBOutlet UILabel *textLabel;
 
 @property (weak, nonatomic) IBOutlet UILabel *grayLevelLabel;
+
+@property (weak, nonatomic) IBOutlet UIImageView *backgroundImageView;
+
+@property (weak, nonatomic) IBOutlet UILabel *FontLabel;
 
 @end
 
@@ -195,17 +201,21 @@ static int num = 0;
         
         NSData *imageData = [NSData dataWithContentsOfURL:picUrl];
         
-        // 显示图片
+        // 显示头像图片
         UIImage *image = [UIImage imageWithData:imageData];
         
-//        self.imageView.image = image;
         self.imageView.image = [UIImage createRoundIconWithImage:image border:0.5 borderColor:[UIColor blackColor]];
-                                
-        // 设置边框和颜色
-//        self.imageView.layer.borderWidth = 2;
-//        self.imageView.layer.borderColor = [[UIColor redColor] CGColor];
         
         self.imageView.contentMode = UIViewContentModeScaleAspectFit;
+        
+        // 显示背景图片
+        CGFloat blurRadius = 200;
+        NSUInteger interation = 10;
+        UIColor *tintColor = [UIColor grayColor];
+        UIImage *blurredImage = [image blurredImageWithRadius:blurRadius iterations:interation tintColor:tintColor];
+        self.backgroundImageView.image = blurredImage;
+//        self.backgroundImageView.image = [[UIImage alloc] blurredImageWithRadius:blurRadius iterations:interation tintColor:tintColor];
+//        self.backgroundImageView.backgroundColor = [UIColor grayColor];
         
         // 得到image的尺寸
         CGSize imageSize = image.size;
@@ -213,15 +223,16 @@ static int num = 0;
         NSLog(@"image width: %f",imageSize.width);
         NSLog(@"image width: %f",imageSize.height);
         
+        const double interval = 0.1;
         // 设置8个位置坐标
-        CGPoint leftTopPoint = CGPointMake(imageSize.width * 0.1, imageSize.height * 0.1);      // 取左上
-        CGPoint topPoint = CGPointMake(imageSize.width * 0.5, imageSize.height * 0.1);          // 取上
-        CGPoint rightTopPoint = CGPointMake(imageSize.width * 0.9, imageSize.height * 0.1);     // 取右上
-        CGPoint rightPoint = CGPointMake(imageSize.width * 0.9, imageSize.height * 0.5);        // 取右
-        CGPoint rightDownPoint = CGPointMake(imageSize.width * 0.9, imageSize.height * 0.9);    // 取右下
-        CGPoint downPoint = CGPointMake(imageSize.width * 0.5, imageSize.height * 0.9);         // 取下
-        CGPoint leftDownPoint = CGPointMake(imageSize.width * 0.1, imageSize.height * 0.9);     // 取左下
-        CGPoint leftPoint = CGPointMake(imageSize.width * 0.1, imageSize.height * 0.5);         // 取左
+        CGPoint leftTopPoint = CGPointMake(imageSize.width * interval, imageSize.height * interval);                    // 取左上
+        CGPoint topPoint = CGPointMake(imageSize.width * 0.5, imageSize.height * interval);                             // 取上
+        CGPoint rightTopPoint = CGPointMake(imageSize.width * (1 - interval), imageSize.height * interval);             // 取右上
+        CGPoint rightPoint = CGPointMake(imageSize.width * (1 - interval), imageSize.height * 0.5);                     // 取右
+        CGPoint rightDownPoint = CGPointMake(imageSize.width * (1 - interval), imageSize.height * (1 - interval));      // 取右下
+        CGPoint downPoint = CGPointMake(imageSize.width * 0.5, imageSize.height * (1 - interval));                      // 取下
+        CGPoint leftDownPoint = CGPointMake(imageSize.width * interval, imageSize.height * (1 - interval));             // 取左下
+        CGPoint leftPoint = CGPointMake(imageSize.width * interval, imageSize.height * 0.5);                            // 取左
   
         // 得到8个位置灰阶值
         double leftTopPointColor = [self getColorAtLocation:leftTopPoint inImage:image];
@@ -241,6 +252,7 @@ static int num = 0;
         if (num >= 0) {
             
             self.textLabel.hidden = NO;
+            self.FontLabel.hidden = NO;
             
             self.grayLevelLabel.text = [NSString stringWithFormat:@"%f",grayLevel];
             
