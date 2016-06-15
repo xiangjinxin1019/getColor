@@ -15,6 +15,7 @@
 		6D48D6DC1D0D552100E0ADE9 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6D48D6DA1D0D552100E0ADE9 /* LaunchScreen.storyboard */; };
 		6D48D6E71D0D552100E0ADE9 /* getColorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D48D6E61D0D552100E0ADE9 /* getColorTests.m */; };
 		6D48D6F21D0D552100E0ADE9 /* getColorUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D48D6F11D0D552100E0ADE9 /* getColorUITests.m */; };
+		6D85CA211D10E70900EB75AB /* picUrl.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6D85CA201D10E70900EB75AB /* picUrl.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,6 +52,7 @@
 		6D48D6ED1D0D552100E0ADE9 /* getColorUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = getColorUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6D48D6F11D0D552100E0ADE9 /* getColorUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = getColorUITests.m; sourceTree = "<group>"; };
 		6D48D6F31D0D552100E0ADE9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		6D85CA201D10E70900EB75AB /* picUrl.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = picUrl.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -105,6 +107,7 @@
 				6D48D6D01D0D552100E0ADE9 /* AppDelegate.m */,
 				6D48D6D21D0D552100E0ADE9 /* ViewController.h */,
 				6D48D6D31D0D552100E0ADE9 /* ViewController.m */,
+				6D85CA201D10E70900EB75AB /* picUrl.plist */,
 				6D48D6D51D0D552100E0ADE9 /* Main.storyboard */,
 				6D48D6D81D0D552100E0ADE9 /* Assets.xcassets */,
 				6D48D6DA1D0D552100E0ADE9 /* LaunchScreen.storyboard */,
@@ -244,6 +247,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6D48D6DC1D0D552100E0ADE9 /* LaunchScreen.storyboard in Resources */,
+				6D85CA211D10E70900EB75AB /* picUrl.plist in Resources */,
 				6D48D6D91D0D552100E0ADE9 /* Assets.xcassets in Resources */,
 				6D48D6D71D0D552100E0ADE9 /* Main.storyboard in Resources */,
 			);
@@ -498,6 +502,7 @@
 				6D48D6F81D0D552100E0ADE9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		6D48D6F91D0D552100E0ADE9 /* Build configuration list for PBXNativeTarget "getColorTests" */ = {
 			isa = XCConfigurationList;
@@ -506,6 +511,7 @@
 				6D48D6FB1D0D552100E0ADE9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		6D48D6FC1D0D552100E0ADE9 /* Build configuration list for PBXNativeTarget "getColorUITests" */ = {
 			isa = XCConfigurationList;
@@ -514,6 +520,7 @@
 				6D48D6FE1D0D552100E0ADE9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
