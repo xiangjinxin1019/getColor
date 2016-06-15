@@ -12,6 +12,10 @@
 
 @property (weak, nonatomic) IBOutlet UIImageView *imageView;
 
+@property (weak, nonatomic) IBOutlet UILabel *textLabel;
+
+@property (weak, nonatomic) IBOutlet UILabel *grayLevelLabel;
+
 @end
 
 @implementation ViewController
@@ -20,8 +24,11 @@
 static int num = 0;
 
 #pragma mark - 获取图片某点的像素颜色
--(UIColor *)getColorAtLocation:(CGPoint)point inImage:(UIImage *)image
+-(double)getColorAtLocation:(CGPoint)point inImage:(UIImage *)image
 {
+    
+    // 定义灰阶
+    double grayLevel = 0;
     
     UIColor* color = nil;
     
@@ -31,7 +38,7 @@ static int num = 0;
     
     if (contextRef == NULL) {
         
-        return nil;
+        return 0.0;
         /* error */
     }
     
@@ -57,14 +64,15 @@ static int num = 0;
         
         int blue = data[offset+3];
         
-        NSLog(@"offset: %i colors: RGB : %i %i %i %i",offset,red,green,blue,alpha);
+//        NSLog(@"offset: %i colors: RGB : %i %i %i %i",offset,red,green,blue,alpha);
         
         //定义YUV模式下的灰阶
-        int grayLevel = red * 0.299 + green * 0.587 + blue * 0.114;
-        NSLog(@"灰阶值为：%d",grayLevel);
+        grayLevel = red * 0.299 + green * 0.587 + blue * 0.114;
+        
+//        NSLog(@"灰阶值为：%f",grayLevel);
         
         //选点的偏移量
-        NSLog(@"x:%f y:%f", point.x, point.y);
+//        NSLog(@"x:%f y:%f", point.x, point.y);
         
         color = [UIColor colorWithRed:(red/255.0f)
                                 green:(green/255.0f)
@@ -76,7 +84,7 @@ static int num = 0;
     
     if (data) free(data);
     
-    return color;
+    return grayLevel;
  
 }
 
@@ -167,6 +175,7 @@ static int num = 0;
 }
 
 
+#pragma mark - 每次touch，从plist中选择一张图片计算灰阶值
 -(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
 {
 
@@ -175,7 +184,6 @@ static int num = 0;
     
     int totalNum = (int)picUrlArray.count;   // plist中url总数
 
-    
     if (num < totalNum) {
         
         // 取url
@@ -185,7 +193,8 @@ static int num = 0;
         
         NSData *imageData = [NSData dataWithContentsOfURL:picUrl];
         
-        UIImage *image = [UIImage imageWithData:imageData]; // 显示图片
+        // 显示图片
+        UIImage *image = [UIImage imageWithData:imageData];
         
         self.imageView.image = image;
         
@@ -194,10 +203,7 @@ static int num = 0;
         // 得到image的尺寸
         CGSize imageSize = image.size;
         
-//        NSLog(@"image尺寸 | 宽：%f",imageSize.width);
-//        NSLog(@"image尺寸 | 高：%f",imageSize.height);
-        
-        // 设置位置坐标
+        // 设置8个位置坐标
         CGPoint leftTopPoint = CGPointMake(imageSize.width * 0.1, imageSize.height * 0.1);      // 取左上
         CGPoint topPoint = CGPointMake(imageSize.width * 0.5, imageSize.height * 0.1);          // 取上
         CGPoint rightTopPoint = CGPointMake(imageSize.width * 0.9, imageSize.height * 0.1);     // 取右上
@@ -206,25 +212,32 @@ static int num = 0;
         CGPoint downPoint = CGPointMake(imageSize.width * 0.5, imageSize.height * 0.9);         // 取下
         CGPoint leftDownPoint = CGPointMake(imageSize.width * 0.1, imageSize.height * 0.9);     // 取左下
         CGPoint leftPoint = CGPointMake(imageSize.width * 0.1, imageSize.height * 0.5);         // 取左
+  
+        // 得到8个位置灰阶值
+        double leftTopPointColor = [self getColorAtLocation:leftTopPoint inImage:image];
+        double topPointColor = [self getColorAtLocation:topPoint inImage:image];
+        double rightTopPointColor = [self getColorAtLocation:rightTopPoint inImage:image];
+        double rightPointColor = [self getColorAtLocation:rightPoint inImage:image];
+        double rightDownPointColor = [self getColorAtLocation:rightDownPoint inImage:image];
+        double downPointColor = [self getColorAtLocation:downPoint inImage:image];
+        double leftDownPointColor = [self getColorAtLocation:leftDownPoint inImage:image];
+        double eftPointColor = [self getColorAtLocation:leftPoint inImage:image];
         
-
-//        NSLog(@"leftTopPoint | 宽:%f",imageSize.width * 0.1);
-//        NSLog(@"leftTopPoint | 高:%f",imageSize.height * 0.1);
-//        
-       
-        // 得到颜色
-        UIColor *leftTopPointColor = [self getColorAtLocation:leftTopPoint inImage:image];
-        UIColor *topPointColor = [self getColorAtLocation:topPoint inImage:image];
-        UIColor *rightTopPointColor = [self getColorAtLocation:rightTopPoint inImage:image];
-        UIColor *rightPointColor = [self getColorAtLocation:rightPoint inImage:image];
-        UIColor *rightDownPointColor = [self getColorAtLocation:rightDownPoint inImage:image];
-        UIColor *downPointColor = [self getColorAtLocation:downPoint inImage:image];
-        UIColor *leftDownPointColor = [self getColorAtLocation:leftDownPoint inImage:image];
-        UIColor *leftPointColor = [self getColorAtLocation:leftPoint inImage:image];
+        // 平均灰阶值
+        double grayLevel = ( leftTopPointColor + topPointColor + rightTopPointColor + rightPointColor +
+                            rightDownPointColor + downPointColor + leftDownPointColor + eftPointColor ) / 8.0;
         
-        
-        
-//        NSLog(@"%@",color);
+        // 显示灰阶值
+        if (num >= 0) {
+            
+            self.textLabel.hidden = NO;
+            
+            self.grayLevelLabel.text = [NSString stringWithFormat:@"%f",grayLevel];
+            
+            self.grayLevelLabel.numberOfLines = 0;
+            
+            NSLog(@"%f",grayLevel);
+        }
         
         num++;
         

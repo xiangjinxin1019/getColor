@@ -10,7 +10,7 @@
 
 @interface ViewController : UIViewController
 
--(UIColor *) getColorAtLocation:(CGPoint )point inImage:(UIImage *)image;
+-(double) getColorAtLocation:(CGPoint )point inImage:(UIImage *)image;
 
 -(CGContextRef) createRBGBitmapContextFormImage:(CGImageRef )image;
 
